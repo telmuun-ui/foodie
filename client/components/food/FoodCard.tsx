@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { FoodDetailModal } from "./FoodDetailModal";
 import { MouseEventHandler, useContext, useState } from "react";
 import { Plus } from "lucide-react";
@@ -26,6 +26,7 @@ export const FoodCard = ({
   _id,
 }: FoodCardProps) => {
   const { addItem } = useContext(CartContext);
+  const imageSrc = image?.trim() || null;
 
   const food = { _id, foodName, price, ingredients, image };
 
@@ -56,7 +57,17 @@ export const FoodCard = ({
       <div onClick={onToggleModal}>
         <Card className="flex flex-col gap-5 p-4 bg-white border-none shadow-none cursor-pointer w-99 h-86 rounded-3xl">
           <div className="relative flex items-end justify-end overflow-hidden h-52 rounded-3xl">
-            <Image src={image} alt={foodName} objectFit="cover" layout="fill" />
+            {imageSrc ? (
+              <Image
+                src={imageSrc}
+                alt={foodName}
+                fill
+                unoptimized
+                className="object-cover"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-muted" />
+            )}
             <Button
               className="absolute bg-white rounded-full w-11 h-11 bottom-5 right-5"
               onClick={handleAddToCart}

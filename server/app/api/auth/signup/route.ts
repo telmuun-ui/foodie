@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const POST = async (request: NextRequest) => {
   try {
     await connectDB();
-    const { name, email, password } = await request.json();
+    const { name, email, password, role } = await request.json();
 
     if (!name || !email || !password) {
       return NextResponse.json({ error: "name, email, and password are required" }, { status: 400 });
@@ -28,7 +28,14 @@ export const POST = async (request: NextRequest) => {
     }
 
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-    const user = await UserModel.create({ name, email, password, expiresAt });
+    const safeRole = role === "admin" ? "admin" : "user";
+    const user = await UserModel.create({
+      name,
+      email,
+      password,
+      role: safeRole,
+      expiresAt,
+    });
 
     const otp = generateOTP();
     await OTPModel.create({ userId: user._id, otp, type: "email_verification", expiresAt });

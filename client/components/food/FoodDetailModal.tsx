@@ -29,6 +29,7 @@ export const FoodDetailModal = ({
   const { addItem } = useContext(CartContext);
   const [quantity, setQuantity] = useState<number>(1);
   const { foodName, image, ingredients, price } = food;
+  const imageSrc = image?.trim() || null;
 
   const addQuantity = () => {
     setQuantity((prev) => prev + 1);
@@ -49,15 +50,20 @@ export const FoodDetailModal = ({
       <DialogContent className="bg-white flex flex-col max-w-[826px] max-h-[412px] sm:rounded-3xl">
         <div className="flex w-full h-full gap-6 rounded-3xl">
           <div className="w-1/2 overflow-hidden rounded-xl">
-            <Image
-              src={image}
-              alt={foodName}
-              objectFit="cover"
-              layout="responsive"
-              width={377}
-              height={364}
-              className="rounded-xl"
-            />
+            {imageSrc ? (
+              <Image
+                src={imageSrc}
+                alt={foodName}
+                objectFit="cover"
+                layout="responsive"
+                width={377}
+                height={364}
+                unoptimized
+                className="rounded-xl"
+              />
+            ) : (
+              <div className="w-full h-full min-h-[364px] rounded-xl bg-muted" />
+            )}
           </div>
           <div className="flex flex-col w-1/2 ">
             <div className="flex justify-end">

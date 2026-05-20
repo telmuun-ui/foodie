@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useFormik } from "formik";
 import { determineValidationSchema, handleSignUp, handleVerifyEmail } from "@/lib";
 import { SignUpEmailBox } from "./SignUpEmailBox";
 import { SignUpPasswordBox } from "./SignUpPasswordBox";
 import { OtpVerificationBox } from "./OtpVerificationBox";
 import { useRouter } from "next/navigation";
+import { UserContext } from "@/app/(main)/context";
 
 export const Signup = () => {
   const { push } = useRouter();
+  const { setUser } = useContext(UserContext);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [userId, setUserId] = useState<string>("");
 
@@ -42,6 +44,7 @@ export const Signup = () => {
       if (data.refreshToken) {
         localStorage.setItem("refreshToken", data.refreshToken);
       }
+      setUser(data.user);
       push("/");
     }
   };

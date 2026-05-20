@@ -5,24 +5,39 @@ import { FoodCard } from "@/components/food";
 import { fetchFoodsWithCategories } from "@/lib/services/get-foods-with-categories";
 import { useEffect, useState } from "react";
 
-export const FoodsWithCategories = () => {
+type FoodsWithCategoriesProps = {
+  selectedCategoryId?: string | null;
+  onCategoriesLoaded?: (categories: FoodCategory[]) => void;
+};
+
+export const FoodsWithCategories = ({
+  selectedCategoryId,
+  onCategoriesLoaded,
+}: FoodsWithCategoriesProps) => {
   const [foodsWithCategories, setFoodsWithCategories] = useState<
     FoodCategory[]
   >([]);
   const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await fetchFoodsWithCategories();
-      if (error) return;
+      if (error) {
+        setHasError(true);
+        setLoading(false);
+        return;
+      }
 
       setFoodsWithCategories(data);
+      onCategoriesLoaded?.(data);
       setLoading(false);
     };
     fetchData();
-  }, []);
+  }, [onCategoriesLoaded]);
 
   if (loading) return <p className="text-white">Loading...</p>;
+  if (hasError) return <p className="text-white">Failed to load foods</p>;
 
   if (!foodsWithCategories?.length) return null;
 
@@ -30,10 +45,14 @@ export const FoodsWithCategories = () => {
     (category) => category?.foods?.length > 0
   );
 
+  const visibleCategories = selectedCategoryId
+    ? nonEmptyCategories.filter((category) => category._id === selectedCategoryId)
+    : nonEmptyCategories;
+
   return (
     <div className="flex flex-col gap-6">
-      {nonEmptyCategories?.map((category, index) => (
-        <div key={index} className="flex flex-col gap-[54px] rounded-xl">
+      {visibleCategories?.map((category) => (
+        <div key={category._id} className="flex flex-col gap-[54px] rounded-xl">
           <p className="text-3xl font-semibold text-white">
             {category?.categoryName}
           </p>

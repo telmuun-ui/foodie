@@ -1,5 +1,5 @@
 import { connectDB } from "@/lib/db";
-import { requireAdmin, handleApiError, getAuthUser } from "@/lib/auth";
+import { handleApiError, getAuthUser } from "@/lib/auth";
 import { OrderModel, FoodModel } from "@/models";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -7,7 +7,7 @@ export const GET = async (request: NextRequest) => {
   try {
     await connectDB();
 
-    requireAdmin(request);
+    const authUser = getAuthUser(request);
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
@@ -17,6 +17,7 @@ export const GET = async (request: NextRequest) => {
     const query: Record<string, unknown> = {};
 
     if (status) query.status = status;
+    if (authUser.role !== "admin") query.user = authUser.userId;
 
     const [orders, total] = await Promise.all([
       OrderModel.find(query)

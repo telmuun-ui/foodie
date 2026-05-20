@@ -9,16 +9,25 @@ type SignupPayload = {
   name: string;
   email: string;
   password: string;
+  role?: "user" | "admin";
 };
 
 type AuthResponse = {
-  accessToken: string;
+  accessToken?: string;
+  refreshToken?: string;
+  message?: string;
+  userId?: string;
   user: {
     _id: string;
     name: string;
     email: string;
     role: string;
   };
+};
+
+type SignupResponse = {
+  message: string;
+  userId: string;
 };
 
 type FoodOrderItem = {

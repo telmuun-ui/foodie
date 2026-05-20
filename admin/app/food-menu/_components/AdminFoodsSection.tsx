@@ -7,9 +7,16 @@ import { AdminFoodSkeleton } from "./food-menu/AdminFoodSkeleton";
 import { fetchFoodsWithCategories } from "@/services/get-foods-with-categories";
 
 export const AdminFoodsSection = () => {
-  const { data: foodsWithCategories, isLoading } = useSWR<FoodCategory[]>("foods-with-categories", fetchFoodsWithCategories);
+  const {
+    data: foodsWithCategories,
+    isLoading,
+    error,
+  } = useSWR<FoodCategory[]>("foods-with-categories", fetchFoodsWithCategories);
 
   if (isLoading || !foodsWithCategories) return <AdminFoodSkeleton />;
+  if (error) {
+    return <div className="rounded-xl bg-destructive/10 p-4 text-sm text-destructive">Failed to load foods: {error.message}</div>;
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -25,7 +32,15 @@ export const AdminFoodsSection = () => {
 
             {category.foods.map((food) => (
               <div key={food._id} className="flex gap-2">
-                <AdminFoodCard image={food.image} price={food.price} ingredients={food.ingredients} foodName={food.foodName} />
+                <AdminFoodCard
+                  id={food._id}
+                  image={food.image}
+                  price={food.price}
+                  ingredients={food.ingredients}
+                  foodName={food.foodName}
+                  categoryId={category._id}
+                  categoryName={category.categoryName}
+                />
               </div>
             ))}
           </div>

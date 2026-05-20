@@ -27,8 +27,18 @@ export const login = async (payload: AuthPayload): Promise<AuthResponse> => {
   return data;
 };
 
-export const signup = async (payload: SignupPayload): Promise<AuthResponse> => {
-  const data = await apiFetch<AuthResponse>("/api/auth/signup", {
+export const signup = async (payload: SignupPayload): Promise<SignupResponse> => {
+  return apiFetch<SignupResponse>("/api/auth/signup", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+};
+
+export const verifyEmail = async (payload: {
+  userId: string;
+  otp: string;
+}): Promise<AuthResponse> => {
+  const data = await apiFetch<AuthResponse>("/api/auth/verify-email", {
     method: "POST",
     body: JSON.stringify(payload),
   });

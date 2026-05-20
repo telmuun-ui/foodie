@@ -6,9 +6,16 @@ import { DishesCategorySkeleton } from "./food-menu/DishesCategorySkeleton";
 import { fetchCategoriesWithCount } from "@/services/get-foods-with-categories";
 
 export const DishesCategory = () => {
-  const { data: categories, isLoading } = useSWR<CategoryWithCount[]>("categories-with-count", fetchCategoriesWithCount);
+  const {
+    data: categories,
+    isLoading,
+    error,
+  } = useSWR<CategoryWithCount[]>("categories-with-count", fetchCategoriesWithCount);
 
   if (isLoading) return <DishesCategorySkeleton />;
+  if (error) {
+    return <div className="rounded-xl bg-destructive/10 p-4 text-sm text-destructive">Failed to load categories: {error.message}</div>;
+  }
   if (!categories?.length) return null;
 
   const allDishesCount = categories.reduce((acc, category) => acc + category.count, 0);

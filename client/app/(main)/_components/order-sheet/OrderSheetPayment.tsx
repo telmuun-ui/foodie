@@ -12,12 +12,17 @@ import { Textarea } from "@/components/ui/textarea";
 
 export const OrderSheetPayment = ({ openModal }: { openModal: () => void }) => {
   const { totalPrice, cartData, clearCart } = useContext(CartContext);
-  const { user } = useContext(UserContext);
+  const { user, loading } = useContext(UserContext);
   const { push } = useRouter();
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const totalPriceWithFee = Number(totalPrice) + 5000;
 
   const handleCreateOrder = async () => {
+    if (loading) {
+      toast.info("Checking your account...");
+      return;
+    }
+
     if (!user) {
       push("/login");
       return;
@@ -88,7 +93,7 @@ export const OrderSheetPayment = ({ openModal }: { openModal: () => void }) => {
       </CardContent>
 
       <CardFooter className="p-4">
-        <Button size="lg" className="w-full bg-red-500 rounded-full" onClick={handleCreateOrder}>
+        <Button size="lg" className="w-full bg-red-500 rounded-full" onClick={handleCreateOrder} disabled={loading}>
           Checkout
         </Button>
       </CardFooter>

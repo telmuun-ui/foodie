@@ -11,7 +11,8 @@ export const GET = async (_: NextRequest, { params }: Params) => {
 
     const food = await FoodModel.findById(id).populate("category", "name");
 
-    if (!food) return NextResponse.json({ error: "Food not found" }, { status: 404 });
+    if (!food)
+      return NextResponse.json({ error: "Food not found" }, { status: 404 });
 
     return NextResponse.json({ food });
   } catch (error) {
@@ -29,7 +30,8 @@ export const PUT = async (request: NextRequest, { params }: Params) => {
 
     const food = await FoodModel.findById(id);
 
-    if (!food) return NextResponse.json({ error: "Food not found" }, { status: 404 });
+    if (!food)
+      return NextResponse.json({ error: "Food not found" }, { status: 404 });
 
     const body = await request.json();
 
@@ -37,6 +39,8 @@ export const PUT = async (request: NextRequest, { params }: Params) => {
     if (body.price !== undefined) food.price = body.price;
     if (body.category !== undefined) food.category = body.category;
     if (body.description !== undefined) food.description = body.description;
+    if (body.imageUrl !== undefined) food.image = body.imageUrl;
+    if (body.image !== undefined) food.image = body.image;
     if (body.isAvailable !== undefined) food.isAvailable = body.isAvailable;
 
     await food.save();
@@ -59,7 +63,8 @@ export async function DELETE(request: NextRequest, { params }: Params) {
 
     const food = await FoodModel.findById(id);
 
-    if (!food) return NextResponse.json({ error: "Food not found" }, { status: 404 });
+    if (!food)
+      return NextResponse.json({ error: "Food not found" }, { status: 404 });
 
     await food.deleteOne();
 

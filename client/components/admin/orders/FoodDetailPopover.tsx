@@ -45,6 +45,7 @@ const FoodDetailPopover = ({ foodOrderItems }: FoodDetailPopoverProps) => {
                 <Image
                   src={food.image}
                   fill
+                  unoptimized
                   className="absolute rounded-sm object-cover"
                   alt="food-image"
                 />

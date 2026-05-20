@@ -9,6 +9,7 @@ import { formatMoney } from "@/lib";
 
 export const OrderSheetFoodItem = ({ food, quantity }: { food: Food; quantity: number }) => {
   const { addQuantity, subtractQuantity, removeItem } = useContext(CartContext);
+  const imageSrc = food.image?.trim() || null;
 
   const handleAddQuantity = () => {
     addQuantity(food._id);
@@ -27,7 +28,18 @@ export const OrderSheetFoodItem = ({ food, quantity }: { food: Food; quantity: n
     <>
       <div className="flex gap-3">
         <div className="w-[124px] h-[120px] relative rounded-lg overflow-hidden">
-          <Image className="fill" src={food?.image} objectFit="cover" layout="fill" alt={food?.foodName} />
+          {imageSrc ? (
+            <Image
+              className="fill"
+              src={imageSrc}
+              objectFit="cover"
+              layout="fill"
+              unoptimized
+              alt={food?.foodName}
+            />
+          ) : (
+            <div className="absolute inset-0 bg-muted" />
+          )}
         </div>
 
         <div className="w-[300px] flex flex-col justify-between">
