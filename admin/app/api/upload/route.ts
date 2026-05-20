@@ -1,3 +1,4 @@
+import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
@@ -30,6 +31,16 @@ export async function POST(request: NextRequest) {
     }
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
+
+    if (blobToken) {
+      const blob = await put(file.name, file, {
+        access: "public",
+        token: blobToken,
+      });
+
+      return NextResponse.json({ url: blob.url });
+    }
 
     if (!apiUrl) {
       return NextResponse.json(
