@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/api/*",
+        source: "/api/:path*",
         headers: [
           {
             key: "Access-Control-Allow-Origin",
